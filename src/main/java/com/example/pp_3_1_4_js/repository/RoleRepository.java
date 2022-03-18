@@ -2,12 +2,11 @@ package com.example.pp_3_1_4_js.repository;
 
 
 import com.example.pp_3_1_4_js.model.Role;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Set;
+@Repository
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
-public interface RoleRepository extends CrudRepository<Role, Long> {
-    Set<Role> findAll();
-    Role findRoleByRole(String role);
-    Role findRoleById(Long id);
+    Role getRoleByName(String name);
 }

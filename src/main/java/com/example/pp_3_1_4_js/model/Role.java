@@ -1,67 +1,83 @@
 package com.example.pp_3_1_4_js.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.security.core.GrantedAuthority;
-
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
-
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
+
     @Id
+    @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    private long id;
 
-    @Column(name = "role", unique = true, nullable = false)
-    private String role;
+    private String name;
 
-    public Role() {}
+    @JsonBackReference
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    private Set <User> users;
 
-    public Role(String role) {
-        this.role = role;
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 
-    public Long getId() {
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Role(String name, Set<User> users) {
+        this.name = name;
+        this.users = users;
+    }
+
+    public Role() {
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     @Override
     public String toString() {
-        return role.replaceAll("ROLE_", "");
+        return getName().substring(5);
     }
-
-    @Override
-    public String getAuthority() {
-        return getRole();
-    }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role1 = (Role) o;
-        return Objects.equals(role, role1.role);
+        Role role = (Role) o;
+        return Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role);
+        return Objects.hash(name);
     }
 }
-
-
